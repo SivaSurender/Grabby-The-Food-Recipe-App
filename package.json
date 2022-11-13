@@ -1,0 +1,23 @@
+{
+  "name": "grabby-the-recipie-app",
+  "version": "1.0.0",
+  "description": "Customizable recipie maker app",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SivaSurender/GrabbyTheRecipieApp.git"
+  },
+  "author": "Bala SS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SivaSurender/GrabbyTheRecipieApp/issues"
+  },
+  "homepage": "https://github.com/SivaSurender/GrabbyTheRecipieApp#readme",
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.8.0",
+    "parcel": "^2.8.0"
+  }
+}
