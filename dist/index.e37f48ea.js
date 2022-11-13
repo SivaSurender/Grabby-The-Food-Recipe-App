@@ -558,10 +558,13 @@ const spinnerWheel = function(parentElement) {
 };
 const showRecipe = async function() {
     try {
+        const id = window.location.hash.slice(1);
+        // guard class
+        if (!id) return;
         // adding the spinner
         spinnerWheel(recipeContainer);
         //1. geting data from API
-        const response = await fetch("https://forkify-api.herokuapp.com/api/v2/recipes/5ed6604591c37cdc054bc886");
+        const response = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
         const finalResponse = await response.json();
         // error handle for invalid ID
         if (!response.ok) throw new Error(`${finalResponse.message} (${response.status})`);
@@ -579,7 +582,8 @@ const showRecipe = async function() {
         };
         console.log(recipe);
         //2. rendering hhtml with obtained data
-        const { id , imageURL , ingredients , publisher , servings , sourceURL , title , cookingTime  } = recipe;
+        const { // id,
+        imageURL , ingredients , publisher , servings , sourceURL , title , cookingTime  } = recipe;
         const renderedHTML = `<figure class="recipe__fig">
           <img src="${imageURL}" crossOrigin = "anonymous" alt="${title}" class="recipe__img" />
           <h1 class="recipe__title">
@@ -666,7 +670,7 @@ const showRecipe = async function() {
             </svg>
           </a>
         </div>`;
-        // emotying the loaded html before appending it with final one
+        // emptying the loaded html before appending it with final one
         recipeContainer.innerHTML = "";
         // loading the final html for rendering
         recipeContainer.insertAdjacentHTML("afterbegin", renderedHTML);
@@ -674,7 +678,11 @@ const showRecipe = async function() {
         alert(err);
     }
 };
-showRecipe();
+// listening for hash change event
+[
+    "hashchange",
+    "load"
+].forEach((ev)=>window.addEventListener(ev, showRecipe));
 
 },{"url:../img/icons.svg":"loVOp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"loVOp":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
