@@ -1,4 +1,5 @@
 import { API_URL } from './config';
+import { getJSON } from './helper';
 
 export const state = {
   recipe: {},
@@ -8,16 +9,12 @@ export const loadRecipe = async function (id) {
   try {
     //1. geting data from API
 
-    const response = await fetch(`${API_URL}${id}`);
+    const finalResponse = await getJSON(`${API_URL}${id}`);
 
-    const finalResponse = await response.json();
-
-    // error handle for invalid ID
-    if (!response.ok)
-      throw new Error(`${finalResponse.message} (${response.status})`);
     // destructuring recipe to readable terms
 
     const { recipe } = finalResponse.data;
+
     // updating the global state variable
     state.recipe = {
       id: recipe.id,
@@ -31,6 +28,6 @@ export const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (error) {
-    console.log(error);
+    console.log(`${error} 🌋🌋🌋`);
   }
 };
