@@ -1,6 +1,13 @@
 const recipeContainer = document.querySelector('.recipe');
 import iconPack from 'url:../img/icons.svg';
 
+// below package imports makes sure that moder es6 works on old browsers
+// polyfilling
+import 'regenerator-runtime/runtime';
+import 'core-js/stable';
+
+import * as model from './model';
+
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -37,31 +44,10 @@ const showRecipe = async function () {
     // adding the spinner
     spinnerWheel(recipeContainer);
 
-    //1. geting data from API
-    const response = await fetch(
-      `https://forkify-api.herokuapp.com/api/v2/recipes/${id}`
-    );
-
-    const finalResponse = await response.json();
-
-    // error handle for invalid ID
-    if (!response.ok)
-      throw new Error(`${finalResponse.message} (${response.status})`);
-    // destructuring recipe to readable terms
-
-    let { recipe } = finalResponse.data;
-    recipe = {
-      id: recipe.id,
-      imageURL: recipe.image_url,
-      ingredients: recipe.ingredients,
-      publisher: recipe.publisher,
-      servings: recipe.servings,
-      sourceURL: recipe.source_url,
-      title: recipe.title,
-      cookingTime: recipe.cooking_time,
-    };
-    console.log(recipe);
-
+    // load and fetch results from api
+    // load the recipe
+    await model.loadRecipe(id);
+    const recipe = model.state.recipe;
     //2. rendering hhtml with obtained data
 
     const {
