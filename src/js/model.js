@@ -28,6 +28,6 @@ export const loadRecipe = async function (id) {
     };
     console.log(state.recipe);
   } catch (error) {
-    console.log(`${error} 🌋🌋🌋`);
+    alert(`${error} 🌋🌋🌋`);
   }
 };

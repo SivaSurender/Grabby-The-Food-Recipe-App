@@ -8,14 +8,6 @@ import 'core-js/stable';
 
 import * as model from './model';
 
-const timeout = function (s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error(`Request took too long! Timeout after ${s} second`));
-    }, s * 1000);
-  });
-};
-
 // https://forkify-api.herokuapp.com/v2
 
 ///////////////////////////////////////
@@ -35,12 +27,12 @@ const showRecipe = async function () {
     // load and fetch results from api
     // load the recipe
     await model.loadRecipe(id);
-    const recipe = model.state.recipe;
+    // const recipe = model.state.recipe;
 
     //2. rendering hhtml with obtained data
     recipeView.render(model.state.recipe);
   } catch (err) {
-    alert(err);
+    console.log(err);
   }
 };
 
