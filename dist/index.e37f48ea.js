@@ -559,7 +559,7 @@ const showRecipe = async function() {
         //2. rendering hhtml with obtained data
         (0, _recipeViewDefault.default).render(_model.state.recipe);
     } catch (err) {
-        console.log(err);
+        (0, _recipeViewDefault.default).renderError();
     }
 };
 // listening for hash change event
@@ -1784,6 +1784,8 @@ var _fractyJs = require("../../../node_modules/fracty/fracty.js");
 class RecipeView {
     #parentElement = document.querySelector(".recipe");
     #data;
+    #errorMessage = "Sorry! we couldn't find that recipe, please select another one and try again.. \uD83D\uDC69‍\uD83C\uDF73\uD83C\uDF73";
+    #message = "";
     #clear() {
         this.#parentElement.innerHTML = "";
     }
@@ -1792,6 +1794,30 @@ class RecipeView {
         const markup = this.#generateMarkup();
         this.#clear();
         this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderError(message = this.#errorMessage) {
+        const markup = `
+      <div class="error">
+            <div>
+              <svg>
+                <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+      </div>`;
+        this.#clear();
+        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderMessage(message = this.#message) {
+        const markup = `
+     <div class="message">
+          <div>
+            <svg>
+              <use href="${(0, _iconsSvgDefault.default)}#icon-smile"></use>
+            </svg>
+          </div>
+          <p>${message}</p>
+    </div>`;
     }
     renderSpinner() {
         const markup = `  
@@ -2676,7 +2702,7 @@ const loadRecipe = async function(id) {
         };
         console.log(state.recipe);
     } catch (error) {
-        alert(`${error} 🌋🌋🌋`);
+        throw error;
     }
 };
 

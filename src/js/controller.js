@@ -32,7 +32,7 @@ const showRecipe = async function () {
     //2. rendering hhtml with obtained data
     recipeView.render(model.state.recipe);
   } catch (err) {
-    console.log(err);
+    recipeView.renderError();
   }
 };
 
