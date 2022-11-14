@@ -126,8 +126,6 @@ class RecipeView {
                 ${ing.description}
               </div>
             </li>`;
-
-    console.log(ing.description);
   }
 }
 
