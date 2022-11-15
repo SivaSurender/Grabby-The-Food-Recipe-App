@@ -14,23 +14,51 @@ class PaginationView extends View {
     // page 1 and rest of the pages
 
     if (this._data.currentPage === 1 && numPages > 1) {
-      return 'page 1 , others';
+      return `
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${iconPack}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${this._data.currentPage + 1}</span>
+          </button>
+        `;
     }
 
     // last page
 
     if (this._data.currentPage === numPages && numPages > 1) {
-      return 'last page';
+      return `
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${iconPack}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${this._data.currentPage - 1}</span>
+          </button>
+        `;
     }
 
     // otehr page
 
     if (this._data.currentPage < numPages) {
-      return 'other page';
+      return `
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${iconPack}#icon-arrow-left"></use>
+            </svg>
+            <span>$Page ${this._data.currentPage + 1}</span>
+          </button>
+        
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${iconPack}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${this._data.currentPage - 1}</span>
+          </button>
+        `;
     }
 
     // Page 1 and there are no other pages
-    return 'only 1 page';
+    return '';
   }
 }
 

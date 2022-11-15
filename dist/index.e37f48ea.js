@@ -581,7 +581,7 @@ const controlSearchResults = async function() {
         // load search result
         await _model.loadSearchResults(query);
         // render page with limited load results
-        (0, _resultsViewDefault.default).render(_model.getResultsPage(1));
+        (0, _resultsViewDefault.default).render(_model.getResultsPage(6));
         // render page with initial pagination buttons
         (0, _paginationViewDefault.default).render(_model.state.search);
     } catch (error) {
@@ -2882,13 +2882,41 @@ class PaginationView extends (0, _viewDefault.default) {
         const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
         console.log("num", numPages);
         // page 1 and rest of the pages
-        if (this._data.currentPage === 1 && numPages > 1) return "page 1 , others";
+        if (this._data.currentPage === 1 && numPages > 1) return `
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${this._data.currentPage + 1}</span>
+          </button>
+        `;
         // last page
-        if (this._data.currentPage === numPages && numPages > 1) return "last page";
+        if (this._data.currentPage === numPages && numPages > 1) return `
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${this._data.currentPage - 1}</span>
+          </button>
+        `;
         // otehr page
-        if (this._data.currentPage < numPages) return "other page";
+        if (this._data.currentPage < numPages) return `
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
+            </svg>
+            <span>$Page ${this._data.currentPage + 1}</span>
+          </button>
+        
+        <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${this._data.currentPage - 1}</span>
+          </button>
+        `;
         // Page 1 and there are no other pages
-        return "only 1 page";
+        return "";
     }
 }
 exports.default = new PaginationView();
