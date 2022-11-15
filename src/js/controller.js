@@ -1,6 +1,7 @@
 const recipeContainer = document.querySelector('.recipe');
 import recipeView from './views/recipeView';
 import SearchView from './views/searchView';
+import resultsView from './views/resultsView';
 
 // below package imports makes sure that moder es6 works on old browsers
 // polyfilling
@@ -8,6 +9,10 @@ import 'regenerator-runtime/runtime';
 import 'core-js/stable';
 
 import * as model from './model';
+
+if (module.hot) {
+  module.hot.accept();
+}
 
 // https://forkify-api.herokuapp.com/v2
 
@@ -41,6 +46,9 @@ const showRecipe = async function () {
 
 const controlSearchResults = async function () {
   try {
+    // show the spinner before the search result gets loaded
+    resultsView.renderSpinner();
+
     // get query result
     const query = SearchView.getSearchQuery();
 
@@ -48,14 +56,15 @@ const controlSearchResults = async function () {
     if (!query) return;
 
     // load search result
-    await model.loadSearchResults('lamb');
+    await model.loadSearchResults(query);
     console.log(model.state.search.results);
+    resultsView.render(model.state.search.results);
   } catch (error) {
     console.error(error);
   }
 };
 
-// listening for hash change event
+// listening for  events publisher subscriber event with a init
 const init = function () {
   recipeView.addHandlerRender(showRecipe);
   SearchView.addHandlerSearch(controlSearchResults);

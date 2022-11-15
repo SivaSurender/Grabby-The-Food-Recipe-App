@@ -1,0 +1,63 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.state = exports.loadSearchResults = exports.loadRecipe = void 0;
+var _config = require("./config");
+var _helper = require("./helper");
+const state = {
+  recipe: {},
+  search: {
+    query: '',
+    results: []
+  }
+};
+exports.state = state;
+const loadRecipe = async function (id) {
+  try {
+    //1. geting data from API
+
+    const finalResponse = await (0, _helper.getJSON)(`${_config.API_URL}${id}`);
+
+    // destructuring recipe to readable terms
+
+    const {
+      recipe
+    } = finalResponse.data;
+
+    // updating the global state variable
+    state.recipe = {
+      id: recipe.id,
+      imageURL: recipe.image_url,
+      ingredients: recipe.ingredients,
+      publisher: recipe.publisher,
+      servings: recipe.servings,
+      sourceURL: recipe.source_url,
+      title: recipe.title,
+      cookingTime: recipe.cooking_time
+    };
+    // console.log(state.recipe);
+  } catch (error) {
+    throw error;
+  }
+};
+exports.loadRecipe = loadRecipe;
+const loadSearchResults = async function (query) {
+  try {
+    //setting the searchquery of the global state to the name ofthe query searched i.e pizza
+    state.search.query = query;
+    const data = await (0, _helper.getJSON)(`${_config.API_URL}/?search=${query}`);
+    state.search.results = data.data.recipes.map(recp => {
+      return {
+        id: recp.id,
+        imageURL: recp.image_url,
+        publisher: recp.publisher,
+        title: recp.title
+      };
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+exports.loadSearchResults = loadSearchResults;

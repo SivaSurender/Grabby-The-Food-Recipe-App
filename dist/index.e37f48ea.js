@@ -539,11 +539,14 @@ var _recipeView = require("./views/recipeView");
 var _recipeViewDefault = parcelHelpers.interopDefault(_recipeView);
 var _searchView = require("./views/searchView");
 var _searchViewDefault = parcelHelpers.interopDefault(_searchView);
+var _resultsView = require("./views/resultsView");
+var _resultsViewDefault = parcelHelpers.interopDefault(_resultsView);
 // below package imports makes sure that moder es6 works on old browsers
 // polyfilling
 var _runtime = require("regenerator-runtime/runtime");
 var _model = require("./model");
 const recipeContainer = document.querySelector(".recipe");
+if (module.hot) module.hot.accept();
 // https://forkify-api.herokuapp.com/v2
 ///////////////////////////////////////
 // spinner wheel
@@ -567,25 +570,28 @@ const showRecipe = async function() {
 // search functionality
 const controlSearchResults = async function() {
     try {
+        // show the spinner before the search result gets loaded
+        (0, _resultsViewDefault.default).renderSpinner();
         // get query result
         const query = (0, _searchViewDefault.default).getSearchQuery();
         // guard class if there's no search term
         if (!query) return;
         // load search result
-        await _model.loadSearchResults("lamb");
+        await _model.loadSearchResults(query);
         console.log(_model.state.search.results);
+        (0, _resultsViewDefault.default).render(_model.state.search.results);
     } catch (error) {
         console.error(error);
     }
 };
-// listening for hash change event
+// listening for  events publisher subscriber event with a init
 const init = function() {
     (0, _recipeViewDefault.default).addHandlerRender(showRecipe);
     (0, _searchViewDefault.default).addHandlerSearch(controlSearchResults);
 };
 init();
 
-},{"core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","./views/recipeView":"l60JC","regenerator-runtime/runtime":"dXNgZ","./model":"Y4A21","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/searchView":"9OQAM"}],"gSXXb":[function(require,module,exports) {
+},{"core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","./views/recipeView":"l60JC","regenerator-runtime/runtime":"dXNgZ","./model":"Y4A21","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/searchView":"9OQAM","./views/resultsView":"cSbZE"}],"gSXXb":[function(require,module,exports) {
 var global = require("../internals/global");
 var DESCRIPTORS = require("../internals/descriptors");
 var defineBuiltInAccessor = require("../internals/define-built-in-accessor");
@@ -1798,105 +1804,62 @@ parcelHelpers.defineInteropFlag(exports);
 var _iconsSvg = require("url:../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 var _fractyJs = require("../../../node_modules/fracty/fracty.js");
-class RecipeView {
-    #parentElement = document.querySelector(".recipe");
-    #data;
-    #errorMessage = "Sorry! we couldn't find that recipe, please select another one and try again.. \uD83D\uDC69‍\uD83C\uDF73\uD83C\uDF73";
-    #message = "";
-    #clear() {
-        this.#parentElement.innerHTML = "";
-    }
-    render(data) {
-        this.#data = data;
-        const markup = this.#generateMarkup();
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
-    }
-    renderError(message = this.#errorMessage) {
-        const markup = `
-      <div class="error">
-            <div>
-              <svg>
-                <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
-              </svg>
-            </div>
-            <p>${message}</p>
-      </div>`;
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
-    }
-    renderMessage(message = this.#message) {
-        const markup = `
-     <div class="message">
-          <div>
-            <svg>
-              <use href="${(0, _iconsSvgDefault.default)}#icon-smile"></use>
-            </svg>
-          </div>
-          <p>${message}</p>
-    </div>`;
-    }
-    renderSpinner() {
-        const markup = `  
-      <div class="spinner">
-           <svg>
-          <use href="${(0, _iconsSvgDefault.default)}#icon-loader"></use>
-          </svg>
-      </div> `;
-        this.#parentElement.innerHTML = "";
-        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
-    }
+var _viewJs = require("./View.js");
+var _viewJsDefault = parcelHelpers.interopDefault(_viewJs);
+class RecipeView extends (0, _viewJsDefault.default) {
+    _parentElement = document.querySelector(".recipe");
+    _errorMessage = "Sorry! we couldn't find that recipe, please select another one and try again.. \uD83D\uDC69‍\uD83C\uDF73\uD83C\uDF73";
+    _message = "";
     addHandlerRender(handler) {
         [
             "hashchange",
             "load"
         ].forEach((ev)=>window.addEventListener(ev, handler));
     }
-    #generateMarkup() {
+    _generateMarkup() {
+        console.log(this._data.iconPack);
         return `<figure class="recipe__fig">
-          <img src="${this.#data.imageURL}" crossOrigin = "anonymous" alt="${this.#data.title}" class="recipe__img" />
+          <img src="${this._data.imageURL}" crossOrigin = "anonymous" alt="${this._data.title}" class="recipe__img" />
           <h1 class="recipe__title">
-            <span>${this.#data.title}</span>
+            <span>${this._data.title}</span>
           </h1>
         </figure>
 
         <div class="recipe__details">
           <div class="recipe__info">
             <svg class="recipe__info-icon">
-              <use href="${this.#data.iconPack}#icon-clock"></use>
+              <use href="${this._data.iconPack}#icon-clock"></use>
             </svg>
-            <span class="recipe__info-data recipe__info-data--minutes">${this.#data.cookingTime}</span>
+            <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>
             <span class="recipe__info-text">minutes</span>
           </div>
           <div class="recipe__info">
             <svg class="recipe__info-icon">
-              <use href="${this.#data.iconPack}#icon-users"></use>
+              <use href="${this._data.iconPack}#icon-users"></use>
             </svg>
-            <span class="recipe__info-data recipe__info-data--people">${this.#data.servings}</span>
+            <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
             <span class="recipe__info-text">servings</span>
 
             <div class="recipe__info-buttons">
               <button class="btn--tiny btn--increase-servings">
                 <svg>
-                  <use href="${this.#data.iconPack}#icon-minus-circle"></use>
+                  <use href="${this._data.iconPack}#icon-minus-circle"></use>
                 </svg>
               </button>
               <button class="btn--tiny btn--increase-servings">
                 <svg>
-                  <use href="${this.#data.iconPack}#icon-plus-circle"></use>
+                  <use href="${this._data.iconPack}#icon-plus-circle"></use>
                 </svg>
               </button>
             </div>
           </div>
 
           <div class="recipe__user-generated">
-            <svg>
-              <use href="${this.#data.iconPack}#icon-user"></use>
-            </svg>
+          
           </div>
           <button class="btn--round">
             <svg class="">
-              <use href="${this.#data.iconPack}#icon-bookmark-fill"></use>
+              <use href="${this._data.iconPack}#icon-bookmark-fill crossorigin"></use>
             </svg>
           </button>
         </div>
@@ -1904,7 +1867,7 @@ class RecipeView {
         <div class="recipe__ingredients">
           <h2 class="heading--2">Recipe ingredients</h2>
           <ul class="recipe__ingredient-list">
-          ${this.#data.ingredients.map(this.#generatemarkupIngredient).join("")}
+          ${this._data.ingredients.map(this._generatemarkupIngredient).join("")}
             
 
           </ul>
@@ -1914,22 +1877,22 @@ class RecipeView {
           <h2 class="heading--2">How to cook it</h2>
           <p class="recipe__directions-text">
             This recipe was carefully designed and tested by
-            <span class="recipe__publisher">${this.#data.publisher}</span>. Please check out
+            <span class="recipe__publisher">${this._data.publisher}</span>. Please check out
             directions at their website.
           </p>
           <a
             class="btn--small recipe__btn"
-            href="${this.#data.sourceURL}"
+            href="${this._data.sourceURL}"
             target="_blank"
           >
             <span>Directions</span>
             <svg class="search__icon">
-              <use href="${this.#data.iconPack}#icon-arrow-right"></use>
+              <use href="${this._data.iconPack}#icon-arrow-right"></use>
             </svg>
           </a>
         </div>`;
     }
-    #generatemarkupIngredient(ing) {
+    _generatemarkupIngredient(ing) {
         return `<li class="recipe__ingredient">
               <svg class="recipe__icon">
                 <use href="${0, _iconsSvgDefault.default}#icon-check"></use>
@@ -1944,44 +1907,7 @@ class RecipeView {
 }
 exports.default = new RecipeView();
 
-},{"url:../../img/icons.svg":"loVOp","../../../node_modules/fracty/fracty.js":"hJO4d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"loVOp":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"hJO4d":[function(require,module,exports) {
+},{"../../../node_modules/fracty/fracty.js":"hJO4d","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./View.js":"5cUXS","url:../../img/icons.svg":"loVOp"}],"hJO4d":[function(require,module,exports) {
 // FRACTY CONVERTS DECIMAL NUMBERS TO FRACTIONS BY ASSUMING THAT TRAILING PATTERNS FROM 10^-2 CONTINUE TO REPEAT
 // The assumption is based on the most standard numbering conventions
 // e.g. 3.51 will convert to 3 51/100 while 3.511 will convert to 3 23/45
@@ -2108,6 +2034,98 @@ exports.export = function(dest, destName, get) {
         get: get
     });
 };
+
+},{}],"5cUXS":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _iconsSvg = require("url:../../img/icons.svg");
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+class View {
+    _data;
+    _clear() {
+        this._parentElement.innerHTML = "";
+    }
+    render(data) {
+        // error check if search is empty
+        if (!data || Array.isArray(data) && data.length === 0) return this.renderError();
+        this._data = data;
+        const markup = this._generateMarkup();
+        this._clear();
+        this._parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderError(message = this._errorMessage) {
+        const markup = `
+      <div class="error">
+            <div>
+              <svg>
+                <use href="${(0, _iconsSvgDefault.default)}#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>${message}</p>
+      </div>`;
+        this._clear();
+        this._parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderMessage(message = this._message) {
+        const markup = `
+     <div class="message">
+          <div>
+            <svg>
+              <use href="${(0, _iconsSvgDefault.default)}#icon-smile"></use>
+            </svg>
+          </div>
+          <p>${message}</p>
+    </div>`;
+    }
+    renderSpinner() {
+        const markup = `  
+      <div class="spinner">
+           <svg>
+          <use href="${(0, _iconsSvgDefault.default)}#icon-loader"></use>
+          </svg>
+      </div> `;
+        this._parentElement.innerHTML = "";
+        this._parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+}
+exports.default = View;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}],"loVOp":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
 
 },{}],"dXNgZ":[function(require,module,exports) {
 /**
@@ -2744,7 +2762,6 @@ const loadSearchResults = async function(query) {
         throw error;
     }
 };
-loadSearchResults("pizza");
 
 },{"./config":"k5Hzs","./helper":"lVRAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
 // main api url which is used to fetch given data
@@ -2786,17 +2803,17 @@ const getJSON = async function(url) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class SearchView {
-    #parentElement = document.querySelector(".search");
+    _parentElement = document.querySelector(".search");
     getSearchQuery() {
-        const query = this.#parentElement.querySelector(".search__field").value;
-        this.#clearInput();
+        const query = this._parentElement.querySelector(".search__field").value;
+        this._clearInput();
         return query;
     }
-    #clearInput() {
-        this.#parentElement.querySelector(".search__field").value = "";
+    _clearInput() {
+        this._parentElement.querySelector(".search__field").value = "";
     }
     addHandlerSearch(handler) {
-        this.#parentElement.addEventListener("submit", function(event) {
+        this._parentElement.addEventListener("submit", function(event) {
             event.preventDefault();
             handler();
         });
@@ -2804,6 +2821,39 @@ class SearchView {
 }
 exports.default = new SearchView();
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire7083")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cSbZE":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+var _iconsSvg = require("url:../../img/icons.svg");
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+class ResultsView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(".results");
+    _errorMessage = "Sorry! we couldn't find that recipe, please select another one and try again.. \uD83D\uDC69‍\uD83C\uDF73\uD83C\uDF73";
+    _message = "";
+    _generateMarkup() {
+        console.log(this._data);
+        return this._data.map(this._generateMarkupPreview).join("");
+    }
+    _generateMarkupPreview(results) {
+        console.log(results);
+        return `<li class="preview">
+            <a class="preview__link " href="#${results.id}">
+              <figure class="preview__fig">
+                <img src="${results.imageURL}" alt="${results.title}" crossorigin />
+              </figure>
+              <div class="preview__data">
+                <h4 class="preview__title">${results.title}</h4>
+                <p class="preview__publisher">${results.publisher}</p>
+                
+              </div>
+            </a>
+          </li>`;
+    }
+}
+exports.default = new ResultsView();
+
+},{"./View":"5cUXS","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire7083")
 
 //# sourceMappingURL=index.e37f48ea.js.map
