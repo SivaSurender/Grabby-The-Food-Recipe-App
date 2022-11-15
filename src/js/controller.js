@@ -2,6 +2,7 @@ const recipeContainer = document.querySelector('.recipe');
 import recipeView from './views/recipeView';
 import SearchView from './views/searchView';
 import resultsView from './views/resultsView';
+import paginationView from './views/paginationView';
 
 // below package imports makes sure that moder es6 works on old browsers
 // polyfilling
@@ -35,7 +36,7 @@ const showRecipe = async function () {
     await model.loadRecipe(id);
     // const recipe = model.state.recipe;
 
-    //2. rendering hhtml with obtained data
+    //2. rendering html with obtained data
     recipeView.render(model.state.recipe);
   } catch (err) {
     recipeView.renderError();
@@ -57,8 +58,12 @@ const controlSearchResults = async function () {
 
     // load search result
     await model.loadSearchResults(query);
-    console.log(model.state.search.results);
-    resultsView.render(model.state.search.results);
+
+    // render page with limited load results
+    resultsView.render(model.getResultsPage(1));
+
+    // render page with initial pagination buttons
+    paginationView.render(model.state.search);
   } catch (error) {
     console.error(error);
   }
