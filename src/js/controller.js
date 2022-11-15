@@ -69,9 +69,13 @@ const controlSearchResults = async function () {
   }
 };
 
+const controlPagination = function () {
+  console.log('Pagination button clicked');
+};
 // listening for  events publisher subscriber event with a init
 const init = function () {
   recipeView.addHandlerRender(showRecipe);
   SearchView.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerPaginationClick(controlPagination);
 };
 init();

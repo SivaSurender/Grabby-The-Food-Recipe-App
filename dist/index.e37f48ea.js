@@ -588,10 +588,14 @@ const controlSearchResults = async function() {
         console.error(error);
     }
 };
+const controlPagination = function() {
+    console.log("Pagination button clicked");
+};
 // listening for  events publisher subscriber event with a init
 const init = function() {
     (0, _recipeViewDefault.default).addHandlerRender(showRecipe);
     (0, _searchViewDefault.default).addHandlerSearch(controlSearchResults);
+    (0, _paginationViewDefault.default).addHandlerPaginationClick(controlPagination);
 };
 init();
 
@@ -2878,6 +2882,13 @@ var _iconsSvg = require("url:../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class PaginationView extends (0, _viewDefault.default) {
     _parentElement = document.querySelector(".pagination");
+    addHandlerPaginationClick(handler) {
+        this._parentElement.addEventListener("click", function(event) {
+            const button = event.target.closest(".btn--inline");
+            console.log(button);
+            handler();
+        });
+    }
     _generateMarkup() {
         const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
         console.log("num", numPages);
