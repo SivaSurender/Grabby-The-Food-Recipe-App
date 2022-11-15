@@ -537,6 +537,8 @@ var _esRegexpFlagsJs = require("core-js/modules/es.regexp.flags.js");
 var _webImmediateJs = require("core-js/modules/web.immediate.js");
 var _recipeView = require("./views/recipeView");
 var _recipeViewDefault = parcelHelpers.interopDefault(_recipeView);
+var _searchView = require("./views/searchView");
+var _searchViewDefault = parcelHelpers.interopDefault(_searchView);
 // below package imports makes sure that moder es6 works on old browsers
 // polyfilling
 var _runtime = require("regenerator-runtime/runtime");
@@ -565,20 +567,25 @@ const showRecipe = async function() {
 // search functionality
 const controlSearchResults = async function() {
     try {
-        await _model.loadSearchResults("pizza");
+        // get query result
+        const query = (0, _searchViewDefault.default).getSearchQuery();
+        // guard class if there's no search term
+        if (!query) return;
+        // load search result
+        await _model.loadSearchResults("lamb");
         console.log(_model.state.search.results);
     } catch (error) {
         console.error(error);
     }
 };
-controlSearchResults();
 // listening for hash change event
 const init = function() {
     (0, _recipeViewDefault.default).addHandlerRender(showRecipe);
+    (0, _searchViewDefault.default).addHandlerSearch(controlSearchResults);
 };
 init();
 
-},{"core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","./views/recipeView":"l60JC","regenerator-runtime/runtime":"dXNgZ","./model":"Y4A21","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gSXXb":[function(require,module,exports) {
+},{"core-js/modules/es.regexp.flags.js":"gSXXb","core-js/modules/web.immediate.js":"49tUX","./views/recipeView":"l60JC","regenerator-runtime/runtime":"dXNgZ","./model":"Y4A21","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/searchView":"9OQAM"}],"gSXXb":[function(require,module,exports) {
 var global = require("../internals/global");
 var DESCRIPTORS = require("../internals/descriptors");
 var defineBuiltInAccessor = require("../internals/define-built-in-accessor");
@@ -2775,6 +2782,28 @@ const getJSON = async function(url) {
     }
 };
 
-},{"./config":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire7083")
+},{"./config":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9OQAM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class SearchView {
+    #parentElement = document.querySelector(".search");
+    getSearchQuery() {
+        const query = this.#parentElement.querySelector(".search__field").value;
+        this.#clearInput();
+        return query;
+    }
+    #clearInput() {
+        this.#parentElement.querySelector(".search__field").value = "";
+    }
+    addHandlerSearch(handler) {
+        this.#parentElement.addEventListener("submit", function(event) {
+            event.preventDefault();
+            handler();
+        });
+    }
+}
+exports.default = new SearchView();
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire7083")
 
 //# sourceMappingURL=index.e37f48ea.js.map

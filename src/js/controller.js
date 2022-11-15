@@ -1,5 +1,6 @@
 const recipeContainer = document.querySelector('.recipe');
 import recipeView from './views/recipeView';
+import SearchView from './views/searchView';
 
 // below package imports makes sure that moder es6 works on old browsers
 // polyfilling
@@ -40,16 +41,23 @@ const showRecipe = async function () {
 
 const controlSearchResults = async function () {
   try {
-    await model.loadSearchResults('pizza');
+    // get query result
+    const query = SearchView.getSearchQuery();
+
+    // guard class if there's no search term
+    if (!query) return;
+
+    // load search result
+    await model.loadSearchResults('lamb');
     console.log(model.state.search.results);
   } catch (error) {
     console.error(error);
   }
 };
 
-controlSearchResults();
 // listening for hash change event
 const init = function () {
   recipeView.addHandlerRender(showRecipe);
+  SearchView.addHandlerSearch(controlSearchResults);
 };
 init();
