@@ -562,6 +562,16 @@ const showRecipe = async function() {
         (0, _recipeViewDefault.default).renderError();
     }
 };
+// search functionality
+const controlSearchResults = async function() {
+    try {
+        await _model.loadSearchResults("pizza");
+        console.log(_model.state.search.results);
+    } catch (error) {
+        console.error(error);
+    }
+};
+controlSearchResults();
 // listening for hash change event
 const init = function() {
     (0, _recipeViewDefault.default).addHandlerRender(showRecipe);
@@ -2723,7 +2733,6 @@ const loadSearchResults = async function(query) {
                 title: recp.title
             };
         });
-        console.log(state);
     } catch (error) {
         throw error;
     }

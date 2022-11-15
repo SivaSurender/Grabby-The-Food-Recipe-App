@@ -50,7 +50,6 @@ export const loadSearchResults = async function (query) {
         title: recp.title,
       };
     });
-    console.log(state);
   } catch (error) {
     throw error;
   }

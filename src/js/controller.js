@@ -36,6 +36,18 @@ const showRecipe = async function () {
   }
 };
 
+// search functionality
+
+const controlSearchResults = async function () {
+  try {
+    await model.loadSearchResults('pizza');
+    console.log(model.state.search.results);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+controlSearchResults();
 // listening for hash change event
 const init = function () {
   recipeView.addHandlerRender(showRecipe);
