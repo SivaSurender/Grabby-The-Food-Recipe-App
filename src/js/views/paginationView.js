@@ -7,8 +7,11 @@ class PaginationView extends View {
   addHandlerPaginationClick(handler) {
     this._parentElement.addEventListener('click', function (event) {
       const button = event.target.closest('.btn--inline');
-      console.log(button);
-      handler();
+      if (!button) return;
+
+      const goToPage = +button.dataset.goto;
+
+      handler(goToPage);
     });
   }
 
@@ -23,20 +26,24 @@ class PaginationView extends View {
 
     if (this._data.currentPage === 1 && numPages > 1) {
       return `
-        <button class="btn--inline pagination__btn--prev">
-            <svg class="search__icon">
-              <use href="${iconPack}#icon-arrow-left"></use>
-            </svg>
-            <span>Page ${this._data.currentPage + 1}</span>
-          </button>
-        `;
+        <button data-goto="${
+          this._data.currentPage + 1
+        }" class="btn--inline pagination__btn--next">
+          <span>Page ${this._data.currentPage + 1}</span>
+          <svg class="search__icon">
+            <use href="${iconPack}#icon-arrow-right"></use>
+          </svg>
+        </button>
+      `;
     }
 
     // last page
 
     if (this._data.currentPage === numPages && numPages > 1) {
       return `
-        <button class="btn--inline pagination__btn--prev">
+        <button data-goto="${
+          this._data.currentPage - 1
+        }" class="btn--inline pagination__btn--prev">
             <svg class="search__icon">
               <use href="${iconPack}#icon-arrow-left"></use>
             </svg>
@@ -49,20 +56,23 @@ class PaginationView extends View {
 
     if (this._data.currentPage < numPages) {
       return `
-        <button class="btn--inline pagination__btn--prev">
-            <svg class="search__icon">
-              <use href="${iconPack}#icon-arrow-left"></use>
-            </svg>
-            <span>$Page ${this._data.currentPage + 1}</span>
-          </button>
-        
-        <button class="btn--inline pagination__btn--prev">
-            <svg class="search__icon">
-              <use href="${iconPack}#icon-arrow-left"></use>
-            </svg>
-            <span>Page ${this._data.currentPage - 1}</span>
-          </button>
-        `;
+        <button data-goto="${
+          this._data.currentPage - 1
+        }" class="btn--inline pagination__btn--prev">
+          <svg class="search__icon">
+            <use href="${iconPack}#icon-arrow-left"></use>
+          </svg>
+          <span>Page ${this._data.currentPage - 1}</span>
+        </button>
+        <button data-goto="${
+          this._data.currentPage + 1
+        }" class="btn--inline pagination__btn--next">
+          <span>Page ${this._data.currentPage + 1}</span>
+          <svg class="search__icon">
+            <use href="${iconPack}#icon-arrow-right"></use>
+          </svg>
+        </button>
+      `;
     }
 
     // Page 1 and there are no other pages

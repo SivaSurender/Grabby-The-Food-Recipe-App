@@ -581,15 +581,19 @@ const controlSearchResults = async function() {
         // load search result
         await _model.loadSearchResults(query);
         // render page with limited load results
-        (0, _resultsViewDefault.default).render(_model.getResultsPage(6));
+        (0, _resultsViewDefault.default).render(_model.getResultsPage(1));
         // render page with initial pagination buttons
         (0, _paginationViewDefault.default).render(_model.state.search);
     } catch (error) {
         console.error(error);
     }
 };
-const controlPagination = function() {
+const controlPagination = function(goToPage) {
     console.log("Pagination button clicked");
+    // render page with new results
+    (0, _resultsViewDefault.default).render(_model.getResultsPage(goToPage));
+    // render page new and updated pagination buttons
+    (0, _paginationViewDefault.default).render(_model.state.search);
 };
 // listening for  events publisher subscriber event with a init
 const init = function() {
@@ -2885,8 +2889,9 @@ class PaginationView extends (0, _viewDefault.default) {
     addHandlerPaginationClick(handler) {
         this._parentElement.addEventListener("click", function(event) {
             const button = event.target.closest(".btn--inline");
-            console.log(button);
-            handler();
+            if (!button) return;
+            const goToPage = +button.dataset.goto;
+            handler(goToPage);
         });
     }
     _generateMarkup() {
@@ -2894,16 +2899,16 @@ class PaginationView extends (0, _viewDefault.default) {
         console.log("num", numPages);
         // page 1 and rest of the pages
         if (this._data.currentPage === 1 && numPages > 1) return `
-        <button class="btn--inline pagination__btn--prev">
-            <svg class="search__icon">
-              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
-            </svg>
-            <span>Page ${this._data.currentPage + 1}</span>
-          </button>
-        `;
+        <button data-goto="${this._data.currentPage + 1}" class="btn--inline pagination__btn--next">
+          <span>Page ${this._data.currentPage + 1}</span>
+          <svg class="search__icon">
+            <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>
+          </svg>
+        </button>
+      `;
         // last page
         if (this._data.currentPage === numPages && numPages > 1) return `
-        <button class="btn--inline pagination__btn--prev">
+        <button data-goto="${this._data.currentPage - 1}" class="btn--inline pagination__btn--prev">
             <svg class="search__icon">
               <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
             </svg>
@@ -2912,20 +2917,19 @@ class PaginationView extends (0, _viewDefault.default) {
         `;
         // otehr page
         if (this._data.currentPage < numPages) return `
-        <button class="btn--inline pagination__btn--prev">
-            <svg class="search__icon">
-              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
-            </svg>
-            <span>$Page ${this._data.currentPage + 1}</span>
-          </button>
-        
-        <button class="btn--inline pagination__btn--prev">
-            <svg class="search__icon">
-              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
-            </svg>
-            <span>Page ${this._data.currentPage - 1}</span>
-          </button>
-        `;
+        <button data-goto="${this._data.currentPage - 1}" class="btn--inline pagination__btn--prev">
+          <svg class="search__icon">
+            <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
+          </svg>
+          <span>Page ${this._data.currentPage - 1}</span>
+        </button>
+        <button data-goto="${this._data.currentPage + 1}" class="btn--inline pagination__btn--next">
+          <span>Page ${this._data.currentPage + 1}</span>
+          <svg class="search__icon">
+            <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>
+          </svg>
+        </button>
+      `;
         // Page 1 and there are no other pages
         return "";
     }

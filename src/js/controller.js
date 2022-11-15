@@ -60,7 +60,7 @@ const controlSearchResults = async function () {
     await model.loadSearchResults(query);
 
     // render page with limited load results
-    resultsView.render(model.getResultsPage(6));
+    resultsView.render(model.getResultsPage(1));
 
     // render page with initial pagination buttons
     paginationView.render(model.state.search);
@@ -69,8 +69,14 @@ const controlSearchResults = async function () {
   }
 };
 
-const controlPagination = function () {
+const controlPagination = function (goToPage) {
   console.log('Pagination button clicked');
+
+  // render page with new results
+  resultsView.render(model.getResultsPage(goToPage));
+
+  // render page new and updated pagination buttons
+  paginationView.render(model.state.search);
 };
 // listening for  events publisher subscriber event with a init
 const init = function () {
