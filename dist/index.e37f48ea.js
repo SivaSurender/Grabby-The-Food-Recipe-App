@@ -2678,10 +2678,15 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
+parcelHelpers.export(exports, "loadSearchResults", ()=>loadSearchResults);
 var _config = require("./config");
 var _helper = require("./helper");
 const state = {
-    recipe: {}
+    recipe: {},
+    search: {
+        query: "",
+        results: []
+    }
 };
 const loadRecipe = async function(id) {
     try {
@@ -2700,13 +2705,32 @@ const loadRecipe = async function(id) {
             title: recipe.title,
             cookingTime: recipe.cooking_time
         };
-        console.log(state.recipe);
+    // console.log(state.recipe);
     } catch (error) {
         throw error;
     }
 };
+const loadSearchResults = async function(query) {
+    try {
+        //setting the searchquery of the global state to the name ofthe query searched i.e pizza
+        state.search.query = query;
+        const data = await (0, _helper.getJSON)(`${(0, _config.API_URL)}/?search=${query}`);
+        state.search.results = data.data.recipes.map((recp)=>{
+            return {
+                id: recp.id,
+                imageURL: recp.image_url,
+                publisher: recp.publisher,
+                title: recp.title
+            };
+        });
+        console.log(state);
+    } catch (error) {
+        throw error;
+    }
+};
+loadSearchResults("pizza");
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"k5Hzs","./helper":"lVRAz"}],"k5Hzs":[function(require,module,exports) {
+},{"./config":"k5Hzs","./helper":"lVRAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
 // main api url which is used to fetch given data
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -2742,6 +2766,6 @@ const getJSON = async function(url) {
     }
 };
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"k5Hzs"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire7083")
+},{"./config":"k5Hzs","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["fA0o9","aenu9"], "aenu9", "parcelRequire7083")
 
 //# sourceMappingURL=index.e37f48ea.js.map
